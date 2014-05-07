@@ -29,15 +29,19 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.emit('finishedTurn', data);
 	});
 	socket.on('player2init',function(){
-		console.log("Sending p2 init data");
+		//console.log("Sending p2 init data");
 		socket.emit('initData', {map : map, actors : actors, freeCells: freeCells});
 	});
 	socket.on('newPlayer',function (data){
 		io.sockets.emit('newPlayer', data);
+		console.log("Got new player");
+		
+		actors[data.name] = data;
+		console.log(actors);
 	});
-	socket.on('yourTurn',function(){
-    
-    	io.sockets.emit('yourTurn');
+	socket.on('yourTurn',function (data){
+    	console.log("Your turn data:" + data)
+    	io.sockets.emit('yourTurn',data);
     
 	});
 });

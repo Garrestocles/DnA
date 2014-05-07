@@ -131,11 +131,13 @@ var Player = function(xCoord, yCoord) {
     this.y = yCoord;
     this.rune = "@";
     this.color = "red";
+    this.name = "Garrestotle";
 
     this.act = function(){
         
         engine.lock();
         //console.log(engine.isLocked());
+        socket.emit('yourTurn',{whoseTurn : this.name});
         window.addEventListener("keydown", this);
         
     };
@@ -206,23 +208,28 @@ var Player = function(xCoord, yCoord) {
     };
 };
 socket.on('newPlayer',function (data){
-    actors["player2"] = new RemoteActor(data.x,data.y,data.rune,data.color);
-    scheduler.add(actors["player2"],true);
+    //console.log(data.name);
+    actors[data.name] = new RemoteActor(data.x,data.y,data.rune,data.color,data.name);
+    scheduler.add(actors[data.name],true);
 });
-var RemoteActor = function(xCoord,yCoord,rune,color){
+socket.on('yourTurn',function(data){
+    document.getElementById("WhoseTurn").innerHTML = data.whoseTurn + "'s Turn";
+});
+var RemoteActor = function(xCoord,yCoord,rune,color,name){
     this.x = xCoord;
     this.y = yCoord;
     this.rune = rune;
     this.color = color;
+    this.name = name;
 
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
     };
     this.draw();
     this.act = function(){
-        console.log("p2 turn");
+        console.log(this.name + "'s turn.");
         engine.lock();
-        socket.emit('yourTurn');
+        socket.emit('yourTurn',{whoseTurn : this.name});
     };
     this.update = function(newX,newY){
         this.x = newX;

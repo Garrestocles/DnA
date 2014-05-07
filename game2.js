@@ -1,18 +1,28 @@
 var display = new ROT.Display({spacing:1.4});
 var map = {};
 
-var socket = io.connect(prompt("Game Client to Connect To:"));
+var socket = io.connect(window.location.origin);
 
 var actors = {};
 var freeCells;
 var master = false;
 
+var name;
+var color;
+//var realm;
+
 var init = function(){
 	console.log("initing data");
-	socket.emit('player2init',"hi");
+	
+    document.forms[0].style.display = "none";
+    name = document.forms[0].elements[0].value;
+    color = document.forms[0].elements[1].value;
+    //realm = document.forms[0].elements[2].value;
+
+    
+    socket.emit('player2init',"hi");
 };
 socket.on('initData',function (data){
-	//console.log(data.actors);
 	map = data.map;
 	actors = data.actors;
 	freeCells = data.freeCells;
@@ -20,19 +30,18 @@ socket.on('initData',function (data){
 	document.body.appendChild(display.getContainer());
 	drawMap();
 
-	
+	console.log(actors);
 	for (actor in data.actors){
-		//console.log(data.actors[actor].x);
-		actors[actor] = new Actor(data.actors[actor].x,data.actors[actor].y,data.actors[actor].rune,data.actors[actor].color);
+		actors[actor] = new Actor(data.actors[actor].x,data.actors[actor].y,data.actors[actor].rune,data.actors[actor].color,data.actors[actor].name);
 	};
 
-	var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+	var index = Math.floor(ROT.RNG.getUniform() * freeCells.length); 
     var key = freeCells.splice(index, 1)[0];
     var parts = key.split(",");
     var x = parseInt(parts[0]);
     var y = parseInt(parts[1]);
-	actors["player2"] = new Player2(x,y);
-	socket.emit('newPlayer',actors["player2"]);
+	actors[name] = new Player2(x,y,color,name);
+	socket.emit('newPlayer',actors[name]);
 	
 });
 var drawMap = function(){
@@ -52,16 +61,23 @@ socket.on('finishedTurn',function(data){
     actors[data.what].update(data.newX, data.newY);
     
 });
-socket.on('yourTurn',function(){
-    
-    actors["player2"].act();
+socket.on('yourTurn',function(data){
+    document.getElementById("WhoseTurn").innerHTML = data.whoseTurn + "'s Turn";
+    if(data.whoseTurn === name)
+        actors[name].act();
     
 });
-var Actor = function(xCoord,yCoord,rune,color){
+socket.on('newPlayer',function (data){
+    //console.log(data.name);
+    if(data.name !== name)
+        actors[data.name] = new Actor(data.x,data.y,data.rune,data.color,data.name);
+});
+var Actor = function(xCoord,yCoord,rune,color,name){
     this.x = xCoord;
     this.y = yCoord;
     this.rune = rune;
     this.color = color;
+    this.name = name;
 
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
@@ -74,11 +90,12 @@ var Actor = function(xCoord,yCoord,rune,color){
         this.draw();
     };
 };
-var Player2 = function(xCoord, yCoord) {
+var Player2 = function(xCoord, yCoord, color, name) {
     this.x = xCoord;
     this.y = yCoord;
     this.rune = "@";
-    this.color = "blue";
+    this.color = color;
+    this.name = name;
 
     this.act = function(){
         //engine.lock();
@@ -102,7 +119,7 @@ var Player2 = function(xCoord, yCoord) {
      
         var code = e.keyCode;
         if(code === 12){
-            socket.emit('somethingMoved',{what: "player2", newX : this.x, newY : this.y});
+            socket.emit('somethingMoved',{what: name, newX : this.x, newY : this.y});
             window.removeEventListener("keydown", this);
             return;
         }
@@ -116,7 +133,7 @@ var Player2 = function(xCoord, yCoord) {
         if (!(newKey in map)) { return; } // cannot move in this direction
             else if(map[newKey] == "#"){return;}    //Cannot move through walls (#s)
 
-        socket.emit('somethingMoved',{what: "player2", newX : newX, newY : newY});
+        socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
         
         window.removeEventListener("keydown", this);
 /*
