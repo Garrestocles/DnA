@@ -4,9 +4,18 @@
         <title>Me being Crazy</title>
         <script src="./rot.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script src="./game.js"></script>
+        <script src="./cathack.js"></script>
     </head>
-    <body onload="init()">
+    <body>
+    	<form id="entryData">
+    		<h3>You find yourself at the mouth of a treacherous looking cave.  It beckens you to enter it's winding labyrinth.  You suspect therein are monsters that live by a standard of moral turpitude.  Your mind begins to wander, as you consider the following: </h3>
+    		What is thy name? <input type="text" name="name" value=""/><br/>
+    		What is thy favorite color? <input type="text" name="color" value=""/><br/>
+    		Is thy session the master session? <br/>
+    			<input type="radio" name="master" value="yes"/>Aye<br/>
+    			<input type="radio" name="master" value="no"/>Nay<br/>
+    		<input type="button" name="start" value="Enter yon dungeon." onclick="init()"/>
+    	</form>
     	<div id="WhoseTurn"></div>
     </body>
 </html>

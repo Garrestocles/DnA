@@ -18,6 +18,9 @@ var actors;
 var freeCells;
 
 io.sockets.on('connection', function (socket) {
+
+	var thisPlayer;
+
 	socket.on('updateMap&Actors',function (data){
 		map = data.map;
 		actors = data.actors;
@@ -37,11 +40,16 @@ io.sockets.on('connection', function (socket) {
 		console.log("Got new player");
 		
 		actors[data.name] = data;
-		console.log(actors);
+		thisPlayer = data.name;
 	});
 	socket.on('yourTurn',function (data){
     	console.log("Your turn data:" + data)
     	io.sockets.emit('yourTurn',data);
     
+	});
+	socket.on('disconnect',function(data){
+		delete actors[thisPlayer];
+		io.sockets.emit('playerLeft',thisPlayer);
+		console.log(thisPlayer + " disconnected.");
 	});
 });
