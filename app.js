@@ -27,6 +27,7 @@ io.sockets.on('connection', function (socket) {
 		freeCells = data.freeCells;
 		console.log("Got Map & Actors");
 		console.log(actors);
+		thisPlayer = "ASCIIMaster";
 	});
 	socket.on('somethingMoved',function (data){
 		io.sockets.emit('finishedTurn', data);
@@ -48,8 +49,12 @@ io.sockets.on('connection', function (socket) {
     
 	});
 	socket.on('disconnect',function(data){
-		delete actors[thisPlayer];
-		io.sockets.emit('playerLeft',thisPlayer);
-		console.log(thisPlayer + " disconnected.");
+		if(thisPlayer === "ASCIIMaster"){
+			io.sockets.emit('AMLeft',"Game Over man...");
+		}else{
+			delete actors[thisPlayer];
+			io.sockets.emit('playerLeft',thisPlayer);
+			console.log(thisPlayer + " disconnected.");
+		}
 	});
 });

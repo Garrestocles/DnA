@@ -62,7 +62,12 @@ socket.on('finishedTurn',function(data){
 socket.on('playerLeft',function (data){
 	actors[data].removeMe();
 });
-
+socket.on('AMLeft',function (data){
+    while (document.body.firstChild) {
+        document.body.removeChild(document.body.firstChild);
+    };
+    confirm("Rocks fall, everyone dies.");
+});
 var masterSockets = function (){
 	socket.on('newPlayer',function (data){
 	    
