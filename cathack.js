@@ -45,7 +45,6 @@ var init = function (){
 		clientSockets();
 		socket.emit('player2init',"hi");
 	}
-	socket.emit('yourTurn',"it worked");
 };
 
 var drawMap = function(){
