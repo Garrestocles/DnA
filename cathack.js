@@ -33,13 +33,14 @@ var init = function (){
 		masterSockets();
 		createMap();
 
-	    scheduler = new ROT.Scheduler.Simple();
-	    scheduler.add(actors["player"],true);
-	    scheduler.add(actors["cat"],true);
-	    engine = new ROT.Engine(scheduler);
-	    engine.start();
-
 	    socket.emit('updateMap&Actors',{map : map, actors : actors, freeCells: freeCells});
+
+        scheduler = new ROT.Scheduler.Simple();
+        scheduler.add(actors["player"],true);
+        scheduler.add(actors["cat"],true);
+        engine = new ROT.Engine(scheduler);
+        engine.start();
+
 	}else{
 		clientSockets();
 		socket.emit('player2init',"hi");
@@ -78,10 +79,15 @@ var masterSockets = function (){
 	    actors[data.name] = new RemoteActor(data.x,data.y,data.rune,data.color,data.name);
 	    scheduler.add(actors[data.name],true);
 	});
-	socket.on('yourTurn',function(data){
+	socket.on('yourTurn',function (data){
 	    document.getElementById("WhoseTurn").innerHTML = "Current Turn: "+data.whoseTurn;
 	    currentTurn = data.whoseTurn;
 	});
+    socket.on('monotheism',function (data){
+        confirm("THERE CAN ONLY BE ONE!");
+        document.body.innerHTML="";
+        document.head.innerHTML="";
+    });
 };
 var clientSockets = function (){
 	socket.on('newPlayer',function (data){

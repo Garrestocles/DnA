@@ -17,17 +17,28 @@ var map;
 var actors;
 var freeCells;
 
+var hasASCIIMaster = false;
+
 io.sockets.on('connection', function (socket) {
 
 	var thisPlayer;
+	var bad = false;
 
 	socket.on('updateMap&Actors',function (data){
-		map = data.map;
-		actors = data.actors;
-		freeCells = data.freeCells;
-		console.log("Got Map & Actors");
-		console.log(actors);
-		thisPlayer = "ASCIIMaster";
+		if(!hasASCIIMaster){
+			map = data.map;
+			actors = data.actors;
+			freeCells = data.freeCells;
+			console.log("Got Map & Actors");
+			console.log(actors);
+			thisPlayer = "ASCIIMaster";
+			hasASCIIMaster = true;
+		}else{
+			socket.emit('monotheism',"nope");
+			bad = true;
+			socket.disconnect();
+		}
+		
 	});
 	socket.on('somethingMoved',function (data){
 		io.sockets.emit('finishedTurn', data);
@@ -44,13 +55,14 @@ io.sockets.on('connection', function (socket) {
 		thisPlayer = data.name;
 	});
 	socket.on('yourTurn',function (data){
-    	console.log("Your turn data:" + data)
-    	io.sockets.emit('yourTurn',data);
+			console.log("Your turn data:" + data);
+    		io.sockets.emit('yourTurn',data);
     
 	});
 	socket.on('disconnect',function(data){
 		if(thisPlayer === "ASCIIMaster"){
 			io.sockets.emit('AMLeft',"Game Over man...");
+			hasASCIIMaster = false;
 		}else{
 			delete actors[thisPlayer];
 			io.sockets.emit('playerLeft',thisPlayer);
