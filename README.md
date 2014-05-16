@@ -1,7 +1,7 @@
-CatHack
+DnA (Dungeons & ASCII)
 =======
 
-Currently all you can do is wander about a randomly generated dungeon.  There's also a cat that follows you around and when it finds you it just kind of walks/lays about around where you are.  But, you don't have to do all this alone, as this allows an arbitray number of persons to join you in your meanderings!  ...assuming, of course, they cooperate and select the correct options at the begining.
+The ultimate goal of this project is to serve as an ASCII tabletop for playing pen & paper-esce RPGs.  The first goal is to essentially make it at least as good as having a laminated sheet of dry erase paper for a map and dice to represent characters.
 
 Requires Node to run.
   Need to npm install socket.io and express.
