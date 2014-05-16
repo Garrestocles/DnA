@@ -1,6 +1,8 @@
 //Global vars for Everyone
 //Init Display
-var display = new ROT.Display({spacing:1.4});
+var w = 70;
+var h = 25;
+var display = new ROT.Display({spacing:1.4, width: w, height: h});
 var map = {};
 
 var socket = io.connect(window.location.origin);
@@ -23,7 +25,9 @@ var init = function (){
 	master = (document.forms[0].master.value == "yes")? true : false;
 
 	document.forms[0].style.display = "none";
-	document.body.appendChild(display.getContainer());
+	document.getElementById("GameArea").appendChild(display.getContainer());
+    document.getElementById("Selected").innerHTML = "Selected: ";
+    document.getElementById("GameData").style.display = "inline-block";
 	
 	if(master){
 		masterSockets();
@@ -75,7 +79,7 @@ var masterSockets = function (){
 	    scheduler.add(actors[data.name],true);
 	});
 	socket.on('yourTurn',function(data){
-	    document.getElementById("WhoseTurn").innerHTML = data.whoseTurn + "'s Turn";
+	    document.getElementById("WhoseTurn").innerHTML = "Current Turn: "+data.whoseTurn;
 	    currentTurn = data.whoseTurn;
 	});
 };
@@ -86,7 +90,7 @@ var clientSockets = function (){
 	        actors[data.name] = new Actor(data.x,data.y,data.rune,data.color,data.name);
 	});
 	socket.on('yourTurn',function(data){
-	    document.getElementById("WhoseTurn").innerHTML = data.whoseTurn + "'s Turn";
+	    document.getElementById("WhoseTurn").innerHTML = "Current Turn: "+data.whoseTurn;
 	    currentTurn = data.whoseTurn;
 	    if(data.whoseTurn === name)
 	        actors[name].act();
@@ -97,7 +101,6 @@ var clientSockets = function (){
 		actors = data.actors;
 		freeCells = data.freeCells;
 
-		document.body.appendChild(display.getContainer());
 		drawMap();
 
 		
@@ -116,7 +119,7 @@ var clientSockets = function (){
 	});
 };
 var createMap = function(){
-	var mapLayout = new ROT.Map.Digger();
+	var mapLayout = new ROT.Map.Digger(w,h,[3,15],0.9);//I don't seem to understand these last 2 arguments
 	freeCells = [];
 
 	mapLayout.create(function(x,y,what){
@@ -406,3 +409,13 @@ var Player2 = function(xCoord, yCoord, color, name) {
         this.draw();
     };
 };
+
+window.addEventListener("click",function (e){
+    var clickCoOrd = display.eventToPosition(e);
+
+    for(dude in actors){
+        //console.log("actors"+actors[dude].x+","+actors[dude].y+" clickCoOrd:"+clickCoOrd);
+        if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1])
+            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
+    };
+});

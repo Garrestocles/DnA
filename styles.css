@@ -1,0 +1,25 @@
+body {
+	width:1300;
+}
+#GameArea{
+	display:inline-block;
+	float: left;
+	/*
+	height: 535px;
+	width: 915px;
+	*/
+}
+#GameData{
+	display: none;
+	height: 519px;
+	width: 290px;
+	border: 3px solid black;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+#GameData div{
+	width: 283px;
+}
+#title {
+	text-align: center;
+}

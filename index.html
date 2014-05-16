@@ -5,6 +5,7 @@
         <script src="./rot.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="./cathack.js"></script>
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
     </head>
     <body>
     	<form id="entryData">
@@ -16,6 +17,11 @@
     			<input type="radio" name="master" value="no"/>Nay<br/>
     		<input type="button" name="start" value="Enter yon dungeon." onclick="init()"/>
     	</form>
-    	<div id="WhoseTurn"></div>
+        <div id="GameArea"></div>
+        <div id="GameData">
+            <div id="title">Dungeons & ASCII<br/>---Game Data---</div><br/>
+            <div id="WhoseTurn"></div>
+            <div id="Selected"></div>
+        </div>
     </body>
 </html>
