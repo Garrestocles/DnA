@@ -34,13 +34,14 @@ var init = function (){
 		createMap();
 
 	    socket.emit('updateMap&Actors',{map : map, actors : actors, freeCells: freeCells});
-
+        window.addEventListener("keydown", actors["player"]);
+/*
         scheduler = new ROT.Scheduler.Simple();
         scheduler.add(actors["player"],true);
         scheduler.add(actors["cat"],true);
         engine = new ROT.Engine(scheduler);
         engine.start();
-
+*/
 	}else{
 		clientSockets();
 		socket.emit('player2init',"hi");
@@ -120,7 +121,7 @@ var clientSockets = function (){
 	    var y = parseInt(parts[1]);
 		actors[name] = new Player2(x,y,color,name);
 		socket.emit('newPlayer',actors[name]);
-		
+		window.addEventListener("keydown", actors[name]);
 	});
 };
 var createMap = function(){
@@ -142,7 +143,7 @@ var createMap = function(){
 	}.bind(this));
 	drawMap();
 	actors["player"] = createCreature(Player, freeCells, name, color);
-    actors["cat"] = createCreature(Cat, freeCells, "Sam", "tan");
+    //actors["cat"] = createCreature(Cat, freeCells, "Sam", "tan");
 };
 var createCreature = function(what, freeCells, thisName, thisColor){
 	var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
@@ -252,7 +253,7 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
 
         socket.emit('somethingMoved',{what: "player", newX : newX, newY : newY});
         
-        window.removeEventListener("keydown", this);
+        //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
@@ -385,7 +386,7 @@ var Player2 = function(xCoord, yCoord, color, name) {
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
         
-        window.removeEventListener("keydown", this);
+        //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
