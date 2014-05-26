@@ -54,6 +54,13 @@ io.sockets.on('connection', function (socket) {
 		actors[data.name] = data;
 		thisPlayer = data.name;
 	});
+	socket.on('newActor',function (data){
+		io.sockets.emit('newPlayer', data);
+		console.log("Got new player");
+		
+		actors[data.name] = data;
+		//thisPlayer = data.name;
+	});
 	socket.on('yourTurn',function (data){
 			console.log("Your turn data:" + data);
     		io.sockets.emit('yourTurn',data);
