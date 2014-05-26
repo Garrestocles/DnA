@@ -16,7 +16,7 @@ var color;
 //Things only used by Session 0
 var scheduler;
 var engine;
-var selected;
+var selected = null;
 
 var currentTurn;
 
@@ -39,29 +39,43 @@ var init = function (){
         var creatureCreator = document.createElement("form");
         var nameInput = document.createElement("input");
         nameInput.type = "text";
-        nameInput.value = "New Creature Name";
+        nameInput.placeholder = "New Creature Name";
         var colorInput = document.createElement("input");
         colorInput.type = "text";
-        colorInput.value = "New Creature Color";
+        colorInput.placeholder = "New Creature Color";
         var runeInput = document.createElement("input");
         runeInput.type = "text";
-        runeInput.value = "New Creature Rune";
+        runeInput.placeholder = "New Creature Rune";
+        var xInput = document.createElement("input");
+        xInput.type = "text";
+        xInput.placeholder = "New Creature x Coord";
+        var yInput = document.createElement("input");
+        yInput.type = "text";
+        yInput.placeholder = "New Creature y Coord";
         var doneInput = document.createElement("input");
         doneInput.type = "button";
         doneInput.value = "Create Creature";
         doneInput.addEventListener("click",function(){
-            socket.emit('newActor', createCreature(Actor, freeCells, nameInput.value, colorInput.value, runeInput.value));
+            if(yInput.value === "" || xInput.value === ""){
+                socket.emit('newActor', createCreature(Actor, freeCells, nameInput.value, colorInput.value, runeInput.value));
+            }else{
+                var dude = new Actor(parseInt(xInput.value),parseInt(yInput.value),nameInput.value, colorInput.value, runeInput.value);
+                socket.emit('newActor', dude);
+            }
+                
         });
         creatureCreator.appendChild(nameInput);
         creatureCreator.appendChild(colorInput);
         creatureCreator.appendChild(runeInput);
         creatureCreator.appendChild(doneInput);
+        creatureCreator.appendChild(xInput);
+        creatureCreator.appendChild(yInput);
         GameData.appendChild(creatureCreator);
 
         window.addEventListener("keydown", function(e){
             //console.log(e);
-            console.log(selected);
-            actors[selected].handleEvent(e);
+            if(selected !== null)
+                actors[selected].handleEvent(e);
         });
 /*
         scheduler = new ROT.Scheduler.Simple();
@@ -74,6 +88,24 @@ var init = function (){
 		clientSockets();
 		socket.emit('player2init',"hi");
 	}
+
+    document.getElementById("GameArea").addEventListener("click",function (e){
+    var clickCoOrd = display.eventToPosition(e);
+    var found = false;
+
+    for(dude in actors){
+        if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
+            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
+            selected = actors[dude].name;
+            found = true;
+        };         
+    };
+    if(!found){
+        document.getElementById("Selected").innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+        selected = null;
+    }
+        
+});
 };
 
 var drawMap = function(){
@@ -577,16 +609,3 @@ var Player2 = function(xCoord, yCoord, color, name) {
         this.draw();
     };
 };
-
-window.addEventListener("click",function (e){
-    var clickCoOrd = display.eventToPosition(e);
-
-    for(dude in actors){
-        if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
-            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
-            selected = actors[dude].name;
-            console.log(selected);
-        }
-            
-    };
-});
