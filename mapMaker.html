@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+    <head>
+        <title>DnA: Dungeons & ASCII</title>
+        <script src="./rot.js"></script>
+        <script src="./mapMaker.js"></script>
+    </head>
+    <body onload=init()>
+    	<div id="GameArea"></div>
+    	<div id="GameData">
+    		Tile Type:
+        <form id=tileType>
+      		<input type="radio" name="Tile" value="#"/>wall</br>
+      		<input type="radio" name="Tile" value="."/>floor</br>
+      		<input type="radio" name="Tile" value="P"/>Player Starting Position</br>
+        </form>
+    	</div>
+    </body>
+</html>
