@@ -73,17 +73,11 @@ var init = function (){
         GameData.appendChild(creatureCreator);
 
         window.addEventListener("keydown", function(e){
-            //console.log(e);
+
             if(selected !== null)
                 actors[selected].handleEvent(e);
         });
-/*
-        scheduler = new ROT.Scheduler.Simple();
-        scheduler.add(actors["player"],true);
-        scheduler.add(actors["cat"],true);
-        engine = new ROT.Engine(scheduler);
-        engine.start();
-*/
+
 	}else{
 		clientSockets();
 		socket.emit('player2init',"hi");
@@ -509,7 +503,6 @@ var Actor = function(xCoord,yCoord,name,color,rune){
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
         
-        //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
@@ -540,11 +533,6 @@ var Player2 = function(xCoord, yCoord, color, name) {
     this.color = color;
     this.name = name;
 
-    this.act = function(){
-        //engine.lock();
-        window.addEventListener("keydown", this);
-        
-    };
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
     };
@@ -561,13 +549,7 @@ var Player2 = function(xCoord, yCoord, color, name) {
         keyMap[36] = 7;
      
         var code = e.keyCode;
-        /*
-        if(code === 12){
-            socket.emit('somethingMoved',{what: name, newX : this.x, newY : this.y});
-            window.removeEventListener("keydown", this);
-            return;
-        }
-        */
+
         if (!(code in keyMap)) { return; }
      
         var diff = ROT.DIRS[8][keyMap[code]];
@@ -580,7 +562,6 @@ var Player2 = function(xCoord, yCoord, color, name) {
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
         
-        //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
@@ -601,7 +582,7 @@ var Player2 = function(xCoord, yCoord, color, name) {
             display.draw(x, y, ch);
         });
 */
-        //engine.unlock();
+
     };
     this.update = function(newX,newY){
         this.x = newX;
