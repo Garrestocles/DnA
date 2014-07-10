@@ -8,12 +8,22 @@
     <body onload=init()>
     	<div id="GameArea"></div>
     	<div id="GameData">
+        <div id='SelectedCoOrd'>No CoOrd Selected</div>
     		Tile Type:
         <form id=tileType>
-      		<input type="radio" name="Tile" value="#"/>wall</br>
+      		<input type="radio" name="Tile" value="#" checked="checked"/>wall</br>
       		<input type="radio" name="Tile" value="."/>floor</br>
       		<input type="radio" name="Tile" value="P"/>Player Starting Position</br>
         </form>
+        <form>
+          <input type="text" placeholder="New Thing Name"></br>
+          <input type="text" placeholder="New Thing Color"></br>
+          <input type="text" placeholder="New Thing Rune"></br>
+          <input type="text" placeholder="New Thing x Coord"></br>
+          <input type="text" placeholder="New Thing y Coord"></br>
+          <input type="button" value="Create Creature" onclick="createThing()">
+        </form>
+        <input type="button" value="Save Hard Work" onclick='saveMap()'/>
     	</div>
     </body>
 </html>

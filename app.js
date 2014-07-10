@@ -2,16 +2,21 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var fs = require('fs');
 
 server.listen(1337);
 
 var tenz = function tenzRoute(req, res){
 	res.sendfile('./index.html');
 };
+var saveMap = function saveMapRoute(req,res){
+	//Recieve JSON data, sanatize it, and save it as a .json file.
+};
 
 app.use('/',express.static(__dirname));
 
 app.get('/',tenz);
+app.post('/saveMap',saveMap);
 
 var map;
 var actors;
@@ -38,7 +43,7 @@ io.sockets.on('connection', function (socket) {
 			bad = true;
 			socket.disconnect();
 		}
-		
+
 	});
 	socket.on('somethingMoved',function (data){
 		io.sockets.emit('finishedTurn', data);
@@ -50,21 +55,21 @@ io.sockets.on('connection', function (socket) {
 	socket.on('newPlayer',function (data){
 		io.sockets.emit('newPlayer', data);
 		console.log("Got new player");
-		
+
 		actors[data.name] = data;
 		thisPlayer = data.name;
 	});
 	socket.on('newActor',function (data){
 		io.sockets.emit('newPlayer', data);
 		console.log("Got new player");
-		
+
 		actors[data.name] = data;
 		//thisPlayer = data.name;
 	});
 	socket.on('yourTurn',function (data){
 			console.log("Your turn data:" + data);
     		io.sockets.emit('yourTurn',data);
-    
+
 	});
 	socket.on('disconnect',function(data){
 		if(thisPlayer === "ASCIIMaster"){
