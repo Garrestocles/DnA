@@ -1,10 +1,7 @@
 var w = 70;
 var h = 25;
 var display = new ROT.Display({spacing:1.4, width: w, height: h});
-var map = new Array(w);
-for(r = 0; r < w; r++){
-  map[r] = new Array(h);
-}
+var map ={};
 var actors = {};
 
 function init(){
@@ -15,7 +12,7 @@ function init(){
 
     var clickCoOrd = display.eventToPosition(e);
 
-    map[clickCoOrd[0]][clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
+    map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
     display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
 
     document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
@@ -25,7 +22,7 @@ function init(){
 function initMap(map){
   for(r = 0; r < w; r++){
     for(b = 0; b < h; b++){
-      map[r][b] = '.';
+      map[r+","+b] = '.';
       display.draw(r,b,'.');
     }
   }
@@ -51,6 +48,17 @@ function createThing(){
 
 
 }
+
+function mapSavedRes(){
+  confirm(this.responseText);
+}
+
 function saveMap(){
 //Turn map and actors into JSON and sent it to the server.
+var request = new XMLHttpRequest();
+request.onload = mapSavedRes;
+request.open("post", "/saveMap", true);
+request.setRequestHeader("Content-type","application/json");
+request.send(JSON.stringify({map: map, gameObj: actors}));
+
 }
