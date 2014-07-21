@@ -16,7 +16,39 @@ var saveMap = function saveMapRoute(req,res){
 	//Recieve JSON data, sanatize it, and save it as a .json file.
 	console.log("Recieved data:");
 	console.log(req.body);
-	res.send(200);
+	if(!verifyMap(req.body.map)) {
+		console.log("Something suspicious just occured in map.");
+		res.send(403);
+	}else if(!verifyGameObjects(req.body.gameObj)){
+		console.log("Something suspicious just occured in objs.");
+		res.send(403);
+	}else {
+		//ToDo:Save the map
+		res.send(200);
+	};
+
+	function verifyMap(potentialMap){
+		var cunningFilter = /^[\.#P]$/;
+		var tile;
+
+		for (tile in potentialMap){
+			if(!cunningFilter.test(potentialMap[tile])) return false;
+		}
+		return true;
+	};
+
+	function verifyGameObjects(potentialObjects){
+		//ToDo:Look for suspicious game objects and return false if found
+		var gameObjName;
+		for (gameObjName in potentialObjects){
+			if(!/^[ \w']+$/.test(gameObjName)) return false; //this filter probably needs to be checked out out more thoroughly
+			if(!/^[a-zA-Z]+$/.test(potentialObjects[gameObjName].color)) return false;
+			if(!/^\.{1}$/.test(potentialObjects[gameObjName].rune)) return false;  //this filter probably needs to be checked out out more thoroughly
+			if(!/^\d+$/.test(potentialObjects[gameObjName].x)) return false;
+			if(!/^\d+$/.test(potentialObjects[gameObjName].y)) return false;
+		}
+		return true;
+	};
 };
 
 app.use('/',express.static(__dirname));
