@@ -22,8 +22,16 @@ var saveMap = function saveMapRoute(req,res){
 	}else if(!verifyGameObjects(req.body.gameObj)){
 		console.log("Something suspicious just occured in objs.");
 		res.send(403);
-	}else {
-		//ToDo:Save the map
+	}else if(verifyFileName(req.body.filename)){
+		console.log("Something suspicious just occured in Filename.");
+		res.send(403);
+	} else{
+		fs.writeFile("./maps/"+req.body.filename+".json",JSON.stringify(req.body),function(err){
+			if(err){
+				res.send(500);
+				throw err;
+			}
+		});
 		res.send(200);
 	};
 
@@ -41,13 +49,16 @@ var saveMap = function saveMapRoute(req,res){
 		//ToDo:Look for suspicious game objects and return false if found
 		var gameObjName;
 		for (gameObjName in potentialObjects){
-			if(!/^[ \w']+$/.test(gameObjName)) return false; //this filter probably needs to be checked out out more thoroughly
-			if(!/^[a-zA-Z]+$/.test(potentialObjects[gameObjName].color)) return false;
-			if(!/^\.{1}$/.test(potentialObjects[gameObjName].rune)) return false;  //this filter probably needs to be checked out out more thoroughly
-			if(!/^\d+$/.test(potentialObjects[gameObjName].x)) return false;
-			if(!/^\d+$/.test(potentialObjects[gameObjName].y)) return false;
+			if(!/^[ \w'\d]+$/.test(gameObjName)) {console.log('a');return false}; //this filter probably needs to be more robustly tested
+			if(!/^[a-zA-Z]+$/.test(potentialObjects[gameObjName].color)) {console.log('b');return false};
+			if(!/^\S{1}$/.test(potentialObjects[gameObjName].rune)) {console.log('c');return false};  //this filter probably needs to be more robustly tested
+			if(!/^\d+$/.test(potentialObjects[gameObjName].x)) {console.log('d');return false};
+			if(!/^\d+$/.test(potentialObjects[gameObjName].y)) {console.log('e');return false};
 		}
 		return true;
+	};
+	function verifyFileName(potentialName){
+		return !/^[\w\d]+$/.test(potentialName) ? true : false;
 	};
 };
 

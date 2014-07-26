@@ -59,6 +59,6 @@ var request = new XMLHttpRequest();
 request.onload = mapSavedRes;
 request.open("post", "/saveMap", true);
 request.setRequestHeader("Content-type","application/json");
-request.send(JSON.stringify({map: map, gameObj: actors}));
+request.send(JSON.stringify({filename: document.getElementById("filename").value, map: map, gameObj: actors}));
 
 }
