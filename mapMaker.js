@@ -53,12 +53,9 @@ function mapSavedRes(){
   confirm(this.responseText);
 }
 
-function saveMap(){
-//Turn map and actors into JSON and sent it to the server.
-var request = new XMLHttpRequest();
-request.onload = mapSavedRes;
-request.open("post", "/saveMap", true);
-request.setRequestHeader("Content-type","application/json");
-request.send(JSON.stringify({filename: document.getElementById("filename").value, map: map, gameObj: actors}));
+function updateDataRealQuick(linkOnTheDL){
+  linkOnTheDL.href="data:application/json,"+JSON.stringify({map: map, gameObj: actors});
+  linkOnTheDL.download=document.getElementById("filename").value+".json";
+
 
 }
