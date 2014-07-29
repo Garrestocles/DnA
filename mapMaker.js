@@ -55,17 +55,35 @@ function createThing(){
     };
     display.draw(xCoOrd ,yCoOrd,rune,color );
   }
+}
 
+function loadMap(mapDnA){
+  console.log("loadMap");
+  var reader = new FileReader();
+  var readFile;
+
+  reader.onload = function(mapDna){
+    readFile = JSON.parse(reader.result);
+
+    console.log(typeof readFile);
+
+    map = readFile.map;
+    //actors = readFile.actors;
+    for(r = 0; r < w; r++){
+      for(b = 0; b < h; b++){
+        display.draw(r,b,map[r+","+b]);
+      }
+    }
+    /*This doesn't work for some reason.  Don't feel like troubleshooting right now.
+    for(name in actors){
+      display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
+    }*/
+  };
+  reader.readAsBinaryString(mapDnA);
 
 }
 
-function mapSavedRes(){
-  confirm(this.responseText);
-}
-
-function updateDataRealQuick(linkOnTheDL){
+function updateDataRealQuickLike(linkOnTheDL){
   linkOnTheDL.href="data:application/json,"+JSON.stringify({map: map, gameObj: actors});
   linkOnTheDL.download=document.getElementById("filename").value+".json";
-
-
 }

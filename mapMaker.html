@@ -23,8 +23,9 @@
           <input type="text" placeholder="New Thing y Coord"></br>
           <input type="button" value="Create Creature" onclick="createThing()">
         </form>
-        FileName:<input id="filename" type="text" value="map">
-        <a id="saveMap" href="" download="" onmouseover='updateDataRealQuick(this)'><input type="button" value="Save Hard Work"/></a>
+        File Name:<input id="filename" type="text" value="map">
+        <a id="saveMap" href="" download="" onmouseover='updateDataRealQuickLike(this)'><input type="button" value="Save Hard Work"/></a>
+        Load File:<input id="loadFile" type="file"/><input type="button" value="Load Selected File" onclick="loadMap(document.getElementById('loadFile').files[0])">
     	</div>
     </body>
 </html>
