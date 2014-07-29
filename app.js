@@ -65,7 +65,7 @@ var saveMap = function saveMapRoute(req,res){
 app.use('/',express.static(__dirname));
 
 app.get('/',tenz);
-app.post('/saveMap',saveMap);
+//app.post('/saveMap',saveMap);
 
 var map;
 var actors;
