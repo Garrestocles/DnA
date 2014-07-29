@@ -3,19 +3,29 @@ var h = 25;
 var display = new ROT.Display({spacing:1.4, width: w, height: h});
 var map ={};
 var actors = {};
+var mousedown = false;
 
 function init(){
-  document.getElementById("GameArea").appendChild(display.getContainer());
+  var gameArea = document.getElementById("GameArea");
+  gameArea.appendChild(display.getContainer());
   initMap(map);
 
-  document.getElementById("GameArea").addEventListener("click",function (e){
+  gameArea.addEventListener("mousedown",function(){
+    mousedown = true;
+  });
+  gameArea.addEventListener("mouseup",function(){
+    mousedown = false;
+  });
 
-    var clickCoOrd = display.eventToPosition(e);
+  gameArea.addEventListener("mousemove",function (e){
+    if(mousedown){
+      var clickCoOrd = display.eventToPosition(e);
 
-    map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
-    display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
+      map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
+      display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
 
-    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+      document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+    }
   });
 }
 
