@@ -62,7 +62,7 @@ var init = function (){
                 var dude = new Actor(parseInt(xInput.value),parseInt(yInput.value),nameInput.value, colorInput.value, runeInput.value);
                 socket.emit('newActor', dude);
             }
-                
+
         });
         creatureCreator.appendChild(nameInput);
         creatureCreator.appendChild(colorInput);
@@ -71,6 +71,39 @@ var init = function (){
         creatureCreator.appendChild(xInput);
         creatureCreator.appendChild(yInput);
         GameData.appendChild(creatureCreator);
+
+				var mapLoader = document.createElement("form");
+				var pickMapButton = document.createElement("input");
+				pickMapButton.type = 'file';
+				var loadMapButton = document.createElement("input");
+				loadMapButton.type = 'button';
+				loadMapButton.value = "Load Selected Map";
+				loadMapButton.addEventListener("click",function(){
+					var reader = new FileReader();
+					var readFile;
+
+					reader.onload = function(mapDna){
+						readFile = JSON.parse(reader.result);
+
+						console.log(readFile);
+						/*
+						map = readFile.map;
+						actors = readFile.gameObj;
+						for(r = 0; r < w; r++){
+							for(b = 0; b < h; b++){
+								display.draw(r,b,map[r+","+b]);
+							}
+						}
+						for(var name in actors){
+							display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
+						}
+						*/
+					};
+					reader.readAsBinaryString(pickMapButton.files[0]);
+				});
+				mapLoader.appendChild(pickMapButton);
+				mapLoader.appendChild(loadMapButton);
+				GameData.appendChild(mapLoader);
 
         window.addEventListener("keydown", function(e){
 
@@ -92,13 +125,13 @@ var init = function (){
             document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
             selected = actors[dude].name;
             found = true;
-        };         
+        };
     };
     if(!found){
         document.getElementById("Selected").innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
         selected = null;
     }
-        
+
 });
 };
 
@@ -116,7 +149,7 @@ socket.on('finishedTurn',function(data){
 
     display.draw(x, y, map[x+","+y]);
     actors[data.what].update(data.newX, data.newY);
-    
+
 });
 socket.on('playerLeft',function (data){
 	actors[data].removeMe();
@@ -129,7 +162,7 @@ socket.on('AMLeft',function (data){
 });
 var masterSockets = function (){
 	socket.on('newPlayer',function (data){
-	    
+
 	    actors[data.name] = new Actor(data.x,data.y,data.name,data.color,data.rune);
 	    scheduler.add(actors[data.name],true);
 	});
@@ -145,7 +178,7 @@ var masterSockets = function (){
 };
 var clientSockets = function (){
 	socket.on('newPlayer',function (data){
-	    
+
 	    if(data.name !== name)
 	        actors[data.name] = new Actor(data.x,data.y,data.name,data.color,data.rune);
 	});
@@ -154,7 +187,7 @@ var clientSockets = function (){
 	    currentTurn = data.whoseTurn;
 	    if(data.whoseTurn === name)
 	        actors[name].act();
-	    
+
 	});
 	socket.on('initData',function (data){
 		map = data.map;
@@ -163,12 +196,12 @@ var clientSockets = function (){
 
 		drawMap();
 
-		
+
 		for (actor in data.actors){
 			actors[actor] = new Actor(data.actors[actor].x,data.actors[actor].y,data.actors[actor].name,data.actors[actor].color,data.actors[actor].rune);
 		};
 
-		var index = Math.floor(ROT.RNG.getUniform() * freeCells.length); 
+		var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
 	    var key = freeCells.splice(index, 1)[0];
 	    var parts = key.split(",");
 	    var x = parseInt(parts[0]);
@@ -184,9 +217,9 @@ var createMap = function(){
 
 	mapLayout.create(function(x,y,what){
 
-		if (what === 1) { 
+		if (what === 1) {
             display.draw(x,y,null,null,"#777");
-            
+
             var key = x+","+y;
             //map[key] = "#";
             return;
@@ -213,7 +246,7 @@ var Cat = function(xCoord,yCoord, thisName, thisColor){
     this.rune = "f";
     this.color = thisColor;
     this.name = thisName;
-    
+
 
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
@@ -245,7 +278,7 @@ var Cat = function(xCoord,yCoord, thisName, thisColor){
             if (!(newKey in map)) { return; } // cannot move in this direction
             if(map[newKey] == "#"){ return; }    //Cannot move through walls (#s)
             if(newX === ownerX && newY === ownerY){return;};
-            
+
         }else{
             path.shift();
             newX = path[0][0];
@@ -267,12 +300,12 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
     this.name = thisName;
 
     this.act = function(){
-        
+
         engine.lock();
 
         socket.emit('yourTurn',{whoseTurn : this.name});
         window.addEventListener("keydown", this);
-        
+
     };
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
@@ -288,7 +321,7 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
         keyMap[35] = 5;
         keyMap[37] = 6;
         keyMap[36] = 7;
-     
+
         var code = e.keyCode;
         if(code === 12){
             engine.unlock();
@@ -296,31 +329,31 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
             return;
         }
         if (!(code in keyMap)) { return; }
-     
+
         var diff = ROT.DIRS[8][keyMap[code]];
         var newX = this.x + diff[0];
         var newY = this.y + diff[1];
-     
+
         var newKey = newX + "," + newY;
         if (!(newKey in map)) { return; } // cannot move in this direction
             else if(map[newKey] == "#"){return;}    //Cannot move through walls (#s)
 
         socket.emit('somethingMoved',{what: "player", newX : newX, newY : newY});
-        
+
         //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
             if (key in map) {
                 if(map[key] !== "#"){
-                    return true; 
+                    return true;
                 }
                 return false;
             }
             return false;
         };
         var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-       
+
         display.clear();
         fov.compute180(x, y, 10, keyMap[code], function(x, y, r, visibility) {
             var ch = (r ? map[x+","+y] : "@");
@@ -328,7 +361,7 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
             display.draw(x, y, ch);
         });
 */
-        
+
     };
     this.update = function(newX,newY){
         this.x = newX;
@@ -337,7 +370,7 @@ var Player = function(xCoord, yCoord, thisName, thisColor) {
         if(master){
             engine.unlock();
         };
-        
+
     };
 };
 var RemoteActor = function(xCoord,yCoord,rune,color,name){
@@ -367,7 +400,7 @@ var RemoteActor = function(xCoord,yCoord,rune,color,name){
     	console.log("Curr Turn: "+currentTurn+" & this.name: "+this.name);
     	if(currentTurn == this.name)
     		engine.unlock();
-    	
+
 
     	scheduler.remove(actors[this.name]);
     	delete actors[this.name];
@@ -405,7 +438,7 @@ var npc = function(xCoord,yCoord,name,color,rune){
         keyMap[35] = 5;
         keyMap[37] = 6;
         keyMap[36] = 7;
-     
+
         var code = e.keyCode;
         /*
         if(code === 12){
@@ -415,31 +448,31 @@ var npc = function(xCoord,yCoord,name,color,rune){
         }
         */
         if (!(code in keyMap)) { return; }
-     
+
         var diff = ROT.DIRS[8][keyMap[code]];
         var newX = this.x + diff[0];
         var newY = this.y + diff[1];
-     
+
         var newKey = newX + "," + newY;
         if (!(newKey in map)) { return; } // cannot move in this direction
             else if(map[newKey] == "#"){return;}    //Cannot move through walls (#s)
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
-        
+
         //window.removeEventListener("keydown", this);
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
             if (key in map) {
                 if(map[key] !== "#"){
-                    return true; 
+                    return true;
                 }
                 return false;
             }
             return false;
         };
         var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-       
+
         display.clear();
         fov.compute180(x, y, 10, keyMap[code], function(x, y, r, visibility) {
             var ch = (r ? map[x+","+y] : "@");
@@ -482,7 +515,7 @@ var Actor = function(xCoord,yCoord,name,color,rune){
         keyMap[35] = 5;
         keyMap[37] = 6;
         keyMap[36] = 7;
-     
+
         var code = e.keyCode;
         /*
         if(code === 12){
@@ -492,30 +525,30 @@ var Actor = function(xCoord,yCoord,name,color,rune){
         }
         */
         if (!(code in keyMap)) { return; }
-     
+
         var diff = ROT.DIRS[8][keyMap[code]];
         var newX = this.x + diff[0];
         var newY = this.y + diff[1];
-     
+
         var newKey = newX + "," + newY;
         if (!(newKey in map)) { return; } // cannot move in this direction
             else if(map[newKey] == "#"){return;}    //Cannot move through walls (#s)
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
-        
+
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
             if (key in map) {
                 if(map[key] !== "#"){
-                    return true; 
+                    return true;
                 }
                 return false;
             }
             return false;
         };
         var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-       
+
         display.clear();
         fov.compute180(x, y, 10, keyMap[code], function(x, y, r, visibility) {
             var ch = (r ? map[x+","+y] : "@");
@@ -547,34 +580,34 @@ var Player2 = function(xCoord, yCoord, color, name) {
         keyMap[35] = 5;
         keyMap[37] = 6;
         keyMap[36] = 7;
-     
+
         var code = e.keyCode;
 
         if (!(code in keyMap)) { return; }
-     
+
         var diff = ROT.DIRS[8][keyMap[code]];
         var newX = this.x + diff[0];
         var newY = this.y + diff[1];
-     
+
         var newKey = newX + "," + newY;
         if (!(newKey in map)) { return; } // cannot move in this direction
             else if(map[newKey] == "#"){return;}    //Cannot move through walls (#s)
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
-        
+
 /*
         var lightPasses = function(x,y){
             var key = x+","+y;
             if (key in map) {
                 if(map[key] !== "#"){
-                    return true; 
+                    return true;
                 }
                 return false;
             }
             return false;
         };
         var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
-       
+
         display.clear();
         fov.compute180(x, y, 10, keyMap[code], function(x, y, r, visibility) {
             var ch = (r ? map[x+","+y] : "@");
