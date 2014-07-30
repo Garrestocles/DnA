@@ -10,8 +10,14 @@ function init(){
   gameArea.appendChild(display.getContainer());
   initMap(map);
 
-  gameArea.addEventListener("mousedown",function(){
+  gameArea.addEventListener("mousedown",function(e){
     mousedown = true;
+    var clickCoOrd = display.eventToPosition(e);
+
+    map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
+    display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
+
+    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
   });
   gameArea.addEventListener("mouseup",function(){
     mousedown = false;
@@ -74,7 +80,6 @@ function loadMap(mapDnA){
         display.draw(r,b,map[r+","+b]);
       }
     }
-    //This doesn't work for some reason.  Don't feel like troubleshooting right now.
     for(var name in actors){
       display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
     }
