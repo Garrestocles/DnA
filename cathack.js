@@ -86,18 +86,27 @@ var init = function (){
 						readFile = JSON.parse(reader.result);
 
 						console.log(readFile);
-						/*
+
 						map = readFile.map;
-						actors = readFile.gameObj;
+						freecells = [];
+						//Need to create actors through my interface so that it has necessary functions.
+						//actors = readFile.gameObj;
 						for(r = 0; r < w; r++){
 							for(b = 0; b < h; b++){
+								if(map[r+","+b] === 'P'){
+									display.draw(r,b,'.');
+									freeCells.push(r+","+b);
+								}else
 								display.draw(r,b,map[r+","+b]);
 							}
 						}
+						/*
 						for(var name in actors){
 							display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
 						}
 						*/
+						socket.emit('updateMap&Actors',{map : map, actors : actors, freeCells: freeCells});
+
 					};
 					reader.readAsBinaryString(pickMapButton.files[0]);
 				});
@@ -140,7 +149,8 @@ var drawMap = function(){
         var parts = key.split(",");
         var x = parseInt(parts[0]);
         var y = parseInt(parts[1]);
-        this.display.draw(x, y, this.map[key]);
+				this.map[key] === 'P' ? this.display.draw(x, y, '.') : this.display.draw(x, y, this.map[key]);
+
     }
 };
 socket.on('finishedTurn',function(data){
@@ -211,6 +221,13 @@ var clientSockets = function (){
 		window.addEventListener("keydown", actors[name]);
 	});
 };
+var loadMap = function(mapObj){
+	map = {};
+	for(coOrd in mapObj){
+		map[coOrd] = mapObj[coOrd];
+	}
+	drawMap();
+}
 var createMap = function(){
 	var mapLayout = new ROT.Map.Digger(w,h,[3,15],0.9);//I don't seem to understand these last 2 arguments
 	freeCells = [];
@@ -218,10 +235,10 @@ var createMap = function(){
 	mapLayout.create(function(x,y,what){
 
 		if (what === 1) {
-            display.draw(x,y,null,null,"#777");
+            //display.draw(x,y,"#",null,"#777");
 
             var key = x+","+y;
-            //map[key] = "#";
+            map[key] = "#";
             return;
         };
         var key = x+","+y;

@@ -79,7 +79,7 @@ io.sockets.on('connection', function (socket) {
 	var bad = false;
 
 	socket.on('updateMap&Actors',function (data){
-		if(!hasASCIIMaster){
+		if(true){//Fix this later so other people can't hijack games
 			map = data.map;
 			actors = data.actors;
 			freeCells = data.freeCells;

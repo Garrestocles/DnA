@@ -72,7 +72,8 @@ function createThing(){
       color: color,
       rune: rune,
       x: xCoOrd,
-      y: yCoOrd
+      y: yCoOrd,
+      name: name
     };
     display.draw(xCoOrd ,yCoOrd,rune,color );
   }
