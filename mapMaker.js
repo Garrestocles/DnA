@@ -68,16 +68,16 @@ function loadMap(mapDnA){
     console.log(typeof readFile);
 
     map = readFile.map;
-    //actors = readFile.actors;
+    actors = readFile.gameObj;
     for(r = 0; r < w; r++){
       for(b = 0; b < h; b++){
         display.draw(r,b,map[r+","+b]);
       }
     }
-    /*This doesn't work for some reason.  Don't feel like troubleshooting right now.
-    for(name in actors){
+    //This doesn't work for some reason.  Don't feel like troubleshooting right now.
+    for(var name in actors){
       display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
-    }*/
+    }
   };
   reader.readAsBinaryString(mapDnA);
 
