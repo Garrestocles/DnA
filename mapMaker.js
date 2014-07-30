@@ -4,6 +4,7 @@ var display = new ROT.Display({spacing:1.4, width: w, height: h});
 var map ={};
 var actors = {};
 var mousedown = false;
+var selected;
 
 function init(){
   var gameArea = document.getElementById("GameArea");
@@ -31,10 +32,24 @@ function mouseUsed(clickCoOrd){
     map[clickCoOrd[0]+","+clickCoOrd[1]] = mouseType;
     display.draw(clickCoOrd[0],clickCoOrd[1],mouseType);
   }
+  var found = false;
 
-  document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+  for(var dude in actors){
+      if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
+          document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+dude +" <a href=javascript:smite('"+dude+"')>Delete?</a>";
+          selected = dude;
+          found = true;
+      };
+  };
+  if(!found){
+    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+    selected = null;
+  }
 }
-
+function smite(object){
+  display.draw(actors[object].x,actors[object].y,'.');
+  delete actors[object];
+}
 function initMap(map){
   for(r = 0; r < w; r++){
     for(b = 0; b < h; b++){
