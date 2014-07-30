@@ -12,12 +12,7 @@ function init(){
 
   gameArea.addEventListener("mousedown",function(e){
     mousedown = true;
-    var clickCoOrd = display.eventToPosition(e);
-
-    map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
-    display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
-
-    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+    mouseUsed(display.eventToPosition(e));
   });
   gameArea.addEventListener("mouseup",function(){
     mousedown = false;
@@ -25,14 +20,19 @@ function init(){
 
   gameArea.addEventListener("mousemove",function (e){
     if(mousedown){
-      var clickCoOrd = display.eventToPosition(e);
-
-      map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
-      display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
-
-      document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+      mouseUsed(display.eventToPosition(e));
     }
   });
+}
+
+function mouseUsed(clickCoOrd){
+  var mouseType = document.getElementById("tileType").Tile.value;
+  if(mouseType !== 'selector'){
+    map[clickCoOrd[0]+","+clickCoOrd[1]] = mouseType;
+    display.draw(clickCoOrd[0],clickCoOrd[1],mouseType);
+  }
+
+  document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
 }
 
 function initMap(map){
