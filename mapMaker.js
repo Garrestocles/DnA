@@ -3,22 +3,53 @@ var h = 25;
 var display = new ROT.Display({spacing:1.4, width: w, height: h});
 var map ={};
 var actors = {};
+var mousedown = false;
+var selected;
 
 function init(){
-  document.getElementById("GameArea").appendChild(display.getContainer());
+  var gameArea = document.getElementById("GameArea");
+  gameArea.appendChild(display.getContainer());
   initMap(map);
 
-  document.getElementById("GameArea").addEventListener("click",function (e){
+  gameArea.addEventListener("mousedown",function(e){
+    mousedown = true;
+    mouseUsed(display.eventToPosition(e));
+  });
+  gameArea.addEventListener("mouseup",function(){
+    mousedown = false;
+  });
 
-    var clickCoOrd = display.eventToPosition(e);
-
-    map[clickCoOrd[0]+","+clickCoOrd[1]] = document.getElementById("tileType").Tile.value;
-    display.draw(clickCoOrd[0],clickCoOrd[1],document.getElementById("tileType").Tile.value);
-
-    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+  gameArea.addEventListener("mousemove",function (e){
+    if(mousedown){
+      mouseUsed(display.eventToPosition(e));
+    }
   });
 }
 
+function mouseUsed(clickCoOrd){
+  var mouseType = document.getElementById("tileType").Tile.value;
+  if(mouseType !== 'selector'){
+    map[clickCoOrd[0]+","+clickCoOrd[1]] = mouseType;
+    display.draw(clickCoOrd[0],clickCoOrd[1],mouseType);
+  }
+  var found = false;
+
+  for(var dude in actors){
+      if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
+          document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+dude +" <a href=javascript:smite('"+dude+"')>Delete?</a>";
+          selected = dude;
+          found = true;
+      };
+  };
+  if(!found){
+    document.getElementById('SelectedCoOrd').innerHTML = "Selected: "+ clickCoOrd[0] + "," + clickCoOrd[1];
+    selected = null;
+  }
+}
+function smite(object){
+  display.draw(actors[object].x,actors[object].y,'.');
+  delete actors[object];
+}
 function initMap(map){
   for(r = 0; r < w; r++){
     for(b = 0; b < h; b++){
@@ -41,24 +72,39 @@ function createThing(){
       color: color,
       rune: rune,
       x: xCoOrd,
-      y: yCoOrd
+      y: yCoOrd,
+      name: name
     };
     display.draw(xCoOrd ,yCoOrd,rune,color );
   }
+}
 
+function loadMap(mapDnA){
+  console.log("loadMap");
+  var reader = new FileReader();
+  var readFile;
+
+  reader.onload = function(mapDna){
+    readFile = JSON.parse(reader.result);
+
+    console.log(typeof readFile);
+
+    map = readFile.map;
+    actors = readFile.gameObj;
+    for(r = 0; r < w; r++){
+      for(b = 0; b < h; b++){
+        display.draw(r,b,map[r+","+b]);
+      }
+    }
+    for(var name in actors){
+      display.draw(actors[name].x,actors[name].y,actors[name].rune,actors[name].color);
+    }
+  };
+  reader.readAsBinaryString(mapDnA);
 
 }
 
-function mapSavedRes(){
-  confirm(this.responseText);
-}
-
-function saveMap(){
-//Turn map and actors into JSON and sent it to the server.
-var request = new XMLHttpRequest();
-request.onload = mapSavedRes;
-request.open("post", "/saveMap", true);
-request.setRequestHeader("Content-type","application/json");
-request.send(JSON.stringify({filename: document.getElementById("filename").value, map: map, gameObj: actors}));
-
+function updateDataRealQuickLike(linkOnTheDL){
+  linkOnTheDL.href="data:application/json,"+JSON.stringify({map: map, gameObj: actors});
+  linkOnTheDL.download=document.getElementById("filename").value+".json";
 }

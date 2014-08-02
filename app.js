@@ -3,15 +3,17 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var fs = require('fs');
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 server.listen(1337);
 
 var tenz = function tenzRoute(req, res){
 	res.sendfile('./index.html');
 };
+/*
+//A bunch of stuff I used when I was uploading files to the server.
 var saveMap = function saveMapRoute(req,res){
 	//Recieve JSON data, sanatize it, and save it as a .json file.
 	console.log("Recieved data:");
@@ -61,11 +63,11 @@ var saveMap = function saveMapRoute(req,res){
 		return !/^[\w\d]+$/.test(potentialName) ? true : false;
 	};
 };
-
+*/
 app.use('/',express.static(__dirname));
 
 app.get('/',tenz);
-app.post('/saveMap',saveMap);
+//app.post('/saveMap',saveMap);
 
 var map;
 var actors;
@@ -79,7 +81,7 @@ io.sockets.on('connection', function (socket) {
 	var bad = false;
 
 	socket.on('updateMap&Actors',function (data){
-		if(!hasASCIIMaster){
+		if(true){//Fix this later so other people can't hijack games
 			map = data.map;
 			actors = data.actors;
 			freeCells = data.freeCells;
@@ -87,6 +89,7 @@ io.sockets.on('connection', function (socket) {
 			console.log(actors);
 			thisPlayer = "ASCIIMaster";
 			hasASCIIMaster = true;
+			io.sockets.emit('initData', {map : map, actors : actors, freeCells: freeCells});
 		}else{
 			socket.emit('monotheism',"nope");
 			bad = true;
