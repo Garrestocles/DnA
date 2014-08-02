@@ -88,7 +88,7 @@ var init = function (){
 						console.log(readFile);
 
 						map = readFile.map;
-						freecells = [];
+						freeCells = [];
 						//Need to create actors through my interface so that it has necessary functions.
 						//actors = readFile.gameObj;
 						for(r = 0; r < w; r++){
