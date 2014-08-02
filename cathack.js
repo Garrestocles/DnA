@@ -633,28 +633,39 @@ var Player2 = function(xCoord, yCoord, color, name) {
 
         socket.emit('somethingMoved',{what: name, newX : newX, newY : newY});
 
-/*
-        var lightPasses = function(x,y){
-            var key = x+","+y;
-            if (key in map) {
-                if(map[key] !== "#"){
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        };
-        var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
 
-        display.clear();
-        fov.compute180(x, y, 10, keyMap[code], function(x, y, r, visibility) {
-            var ch = (r ? map[x+","+y] : "@");
-            var color = (map[x+","+y] ? "#aa0": "#660");
-            display.draw(x, y, ch);
-        });
-*/
+        this.sight();
+
 
     };
+		this.sight = function(){
+			var lightPasses = function(x,y){
+					var key = x+","+y;
+					if (key in map) {
+							if(map[key] !== "#"){
+									return true;
+							}
+							return false;
+					}
+					return false;
+			};
+			var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
+
+			display.clear();
+			fov.compute(this.x, this.y, 50, function(x, y, r, visibility) {
+					var ch = (r ? map[x+","+y] : "@");
+					var color = (map[x+","+y] ? "#aa0": "#660");
+					var alreadyDrew = false;
+					for(dude in actors){
+						if(actors[dude].x === x && actors[dude].y === y){
+							actors[dude].draw();
+							alreadyDrew = true;
+						}
+					};
+					if(!alreadyDrew) display.draw(x, y, ch);
+			});
+		};
+		this.sight();
     this.update = function(newX,newY){
         this.x = newX;
         this.y = newY;
