@@ -174,7 +174,6 @@ var masterSockets = function (){
 	socket.on('newPlayer',function (data){
 
 	    actors[data.name] = new Actor(data.x,data.y,data.name,data.color,data.rune);
-	    scheduler.add(actors[data.name],true);
 	});
 	socket.on('yourTurn',function (data){
 	    document.getElementById("WhoseTurn").innerHTML = "Current Turn: "+data.whoseTurn;
@@ -216,6 +215,28 @@ var clientSockets = function (){
 	    var parts = key.split(",");
 	    var x = parseInt(parts[0]);
 	    var y = parseInt(parts[1]);
+		actors[name] = new Player2(x,y,color,name);
+		socket.emit('newPlayer',actors[name]);
+		window.addEventListener("keydown", actors[name]);
+	});
+	socket.on('updateData',function (data){
+		console.log('updateData');
+		map = data.map;
+		actors = data.actors;
+		freeCells = data.freeCells;
+
+		drawMap();
+
+
+		for (actor in data.actors){
+			actors[actor] = new Actor(data.actors[actor].x,data.actors[actor].y,data.actors[actor].name,data.actors[actor].color,data.actors[actor].rune);
+		};
+
+		var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+			var key = freeCells.splice(index, 1)[0];
+			var parts = key.split(",");
+			var x = parseInt(parts[0]);
+			var y = parseInt(parts[1]);
 		actors[name] = new Player2(x,y,color,name);
 		socket.emit('newPlayer',actors[name]);
 		window.addEventListener("keydown", actors[name]);

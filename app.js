@@ -87,6 +87,7 @@ io.sockets.on('connection', function (socket) {
 			console.log(actors);
 			thisPlayer = "ASCIIMaster";
 			hasASCIIMaster = true;
+			io.sockets.emit('initData', {map : map, actors : actors, freeCells: freeCells});
 		}else{
 			socket.emit('monotheism',"nope");
 			bad = true;
