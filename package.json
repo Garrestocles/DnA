@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "socket.io": "0.9.x",
-    "express": "3.x",
-    "body-parser": "~1.4.3"
+    "express": "3.x"
   },
   "engines": {
     "node": "0.10.x",

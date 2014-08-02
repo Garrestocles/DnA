@@ -3,15 +3,17 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var fs = require('fs');
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 server.listen(1337);
 
 var tenz = function tenzRoute(req, res){
 	res.sendfile('./index.html');
 };
+/*
+//A bunch of stuff I used when I was uploading files to the server.
 var saveMap = function saveMapRoute(req,res){
 	//Recieve JSON data, sanatize it, and save it as a .json file.
 	console.log("Recieved data:");
@@ -61,7 +63,7 @@ var saveMap = function saveMapRoute(req,res){
 		return !/^[\w\d]+$/.test(potentialName) ? true : false;
 	};
 };
-
+*/
 app.use('/',express.static(__dirname));
 
 app.get('/',tenz);
