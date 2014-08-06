@@ -131,7 +131,7 @@ var init = function (){
 
     for(dude in actors){
         if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
-            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
+            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name +" <a href=javascript:smite('"+dude+"')>Delete?</a>";
             selected = actors[dude].name;
             found = true;
         };
@@ -143,7 +143,10 @@ var init = function (){
 
 });
 };
-
+var smite = function(object){
+	display.draw(actors[object].x,actors[object].y,'.');
+	delete actors[object];
+}
 var drawMap = function(){
 	for (var key in this.map) {
         var parts = key.split(",");
