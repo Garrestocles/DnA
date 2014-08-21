@@ -67,6 +67,9 @@ var saveMap = function saveMapRoute(req,res){
 app.use('/',express.static(__dirname));
 
 app.get('/',tenz);
+app.get('/mapMaker',function(req,res){
+	res.sendfile('./mapMaker.html');
+});
 //app.post('/saveMap',saveMap);
 
 var map;
