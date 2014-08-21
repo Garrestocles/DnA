@@ -23,7 +23,10 @@ var currentTurn;
 var init = function (){
 	name = document.forms[0].name.value;
 	color = document.forms[0].color.value;
-	master = (document.forms[0].master.value == "yes")? true : false;
+	var radio = document.getElementsByName("master");
+	for (var r = 0; r < radio.length; r++){
+		if(radio[r].checked) master = radio[r].value;
+	};
 
 	document.forms[0].style.display = "none";
 	document.getElementById("GameArea").appendChild(display.getContainer());
