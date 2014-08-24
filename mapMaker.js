@@ -27,7 +27,13 @@ function init(){
 }
 
 function mouseUsed(clickCoOrd){
-  var mouseType = document.getElementById("tileType").Tile.value;
+  var mouseType;
+
+  var radio = document.getElementsByName("Tile");
+  for (var r = 0; r < radio.length; r++){
+    if(radio[r].checked) mouseType = radio[r].value;
+  }
+
   if(mouseType !== 'selector'){
     map[clickCoOrd[0]+","+clickCoOrd[1]] = mouseType;
     display.draw(clickCoOrd[0],clickCoOrd[1],mouseType);

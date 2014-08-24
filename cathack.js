@@ -23,7 +23,10 @@ var currentTurn;
 var init = function (){
 	name = document.forms[0].name.value;
 	color = document.forms[0].color.value;
-	master = (document.forms[0].master.value == "yes")? true : false;
+	var radio = document.getElementsByName("master");
+	for (var r = 0; r < radio.length; r++){
+		if(radio[r].checked) master = radio[r].value;
+	};
 
 	document.forms[0].style.display = "none";
 	document.getElementById("GameArea").appendChild(display.getContainer());
@@ -131,7 +134,7 @@ var init = function (){
 
     for(dude in actors){
         if(actors[dude].x === clickCoOrd[0] && actors[dude].y === clickCoOrd[1]){
-            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name;
+            document.getElementById("Selected").innerHTML = "Selected: "+actors[dude].name +" <a href=javascript:smite('"+dude+"')>Delete?</a>";
             selected = actors[dude].name;
             found = true;
         };
@@ -143,7 +146,10 @@ var init = function (){
 
 });
 };
-
+var smite = function(object){
+	display.draw(actors[object].x,actors[object].y,'.');
+	delete actors[object];
+}
 var drawMap = function(){
 	for (var key in this.map) {
         var parts = key.split(",");

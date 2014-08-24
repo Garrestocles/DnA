@@ -1,9 +1,16 @@
 body {
 	width:1300;
+	background-image: url("./media/stoneWall.png");
 }
 #GameArea{
 	display:inline-block;
 	float: left;
+	padding: 5px 5px 0px 5px;
+	border-left: 7px outset GoldenRod;
+	border-top: 7px outset GoldenRod;
+	border-bottom: 7px outset GoldenRod;
+	border-right: 4px solid GoldenRod;
+	background-color: #ccc;
 	/*
 	height: 535px;
 	width: 915px;
@@ -13,13 +20,32 @@ body {
 	display: none;
 	height: 519px;
 	width: 290px;
-	border: 3px solid black;
+	border-right: 7px outset GoldenRod;
+	border-top: 7px outset GoldenRod;
+	border-bottom: 7px outset GoldenRod;
+	border-left: 3px solid #836313;
+
 	padding-left: 10px;
 	padding-right: 10px;
+	padding-bottom: 16px;
+	background-color: #CCC;
 }
 #GameData div{
 	width: 283px;
+	font-family: serif;
+}
+#GameData #Header {
+	text-align: center;
+	font-size: 20px;
+}
+#entryData {
+	background-color: #CCC;
+	padding: 1px 10px 10px 10px;
+	border: 15px outset GoldenRod;
 }
 #title {
+	color: #fff;
+	text-shadow: 0px -1px 4px white, 0px -2px 10px yellow, 0px -10px 20px #ff8000, 0px -18px 40px red;
+	font-size: 40px;
 	text-align: center;
 }

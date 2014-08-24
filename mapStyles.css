@@ -1,0 +1,31 @@
+body {
+  width:1300;
+  background-image: url("./media/stoneWall.png");
+}
+#GameData{
+  height: 519px;
+  border-right: 7px outset GoldenRod;
+  border-top: 7px outset GoldenRod;
+  border-bottom: 7px outset GoldenRod;
+
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 16px;
+  background-color: #CCC;
+
+}
+#title {
+  color: #fff;
+  text-shadow: 0px -1px 4px white, 0px -2px 10px yellow, 0px -10px 20px #ff8000, 0px -18px 40px red;
+  font-size: 40px;
+  text-align: center;
+}
+#GameArea{
+  display:inline-block;
+  float: left;
+  padding: 5px 5px 0px 5px;
+  border-left: 7px outset GoldenRod;
+  border-top: 7px outset GoldenRod;
+  border-bottom: 7px outset GoldenRod;
+  background-color: #ccc;
+}
