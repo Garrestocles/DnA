@@ -21,11 +21,12 @@ var clientSockets = function (){
     };
 
     var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-      var key = freeCells.splice(index, 1)[0];
-      var parts = key.split(",");
-      var x = parseInt(parts[0]);
-      var y = parseInt(parts[1]);
+    var key = freeCells.splice(index, 1)[0];
+    var parts = key.split(",");
+    var x = parseInt(parts[0]);
+    var y = parseInt(parts[1]);
     actors[name] = new Player2(x,y,color,name);
+    actors[name].sight();
     socket.emit('newPlayer',actors[name]);
     window.addEventListener("keydown", actors[name]);
   });
@@ -42,10 +43,10 @@ var clientSockets = function (){
     };
 
     var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-      var key = freeCells.splice(index, 1)[0];
-      var parts = key.split(",");
-      var x = parseInt(parts[0]);
-      var y = parseInt(parts[1]);
+    var key = freeCells.splice(index, 1)[0];
+    var parts = key.split(",");
+    var x = parseInt(parts[0]);
+    var y = parseInt(parts[1]);
     actors[name] = new Player2(x,y,color,name);
     socket.emit('newPlayer',actors[name]);
     window.addEventListener("keydown", actors[name]);
@@ -58,6 +59,7 @@ var Player2 = function(xCoord, yCoord, color, name) {
     this.rune = "@";
     this.color = color;
     this.name = name;
+    this.tilesSeen = {};
 
     this.draw = function(){
         display.draw(this.x,this.y,this.rune,this.color);
@@ -91,6 +93,9 @@ var Player2 = function(xCoord, yCoord, color, name) {
       this.sight();
     };
     this.sight = function(){
+
+      this.tilesSeen = {};
+
       var lightPasses = function(x,y){
           var key = x+","+y;
           if (key in map) {
@@ -104,6 +109,7 @@ var Player2 = function(xCoord, yCoord, color, name) {
       var fov = new ROT.FOV.RecursiveShadowcasting(lightPasses);
 
       display.clear();
+
       fov.compute(this.x, this.y, 50, function(x, y, r, visibility) {
           var ch = (r ? map[x+","+y] : "@");
           var color = (map[x+","+y] ? "#aa0": "#660");
@@ -115,9 +121,11 @@ var Player2 = function(xCoord, yCoord, color, name) {
             }
           };
           if(!alreadyDrew) display.draw(x, y, ch);
+
+          actors[name].tilesSeen[x+","+y] = true;
       });
     };
-    this.sight();
+
     this.update = function(newX,newY){
         this.x = newX;
         this.y = newY;

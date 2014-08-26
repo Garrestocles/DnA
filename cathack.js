@@ -87,9 +87,19 @@ var drawMap = function(){
 socket.on('finishedTurn',function(data){
   var x = actors[data.what].x;
   var y = actors[data.what].y;
-
-  display.draw(x, y, map[x+","+y]);
-  actors[data.what].update(data.newX, data.newY);
+	//console.log(master);
+	if(master !== "yes"){
+		if(actors[name].tilesSeen[x+","+y]) display.draw(x, y, map[x+","+y]);
+		if(actors[name].tilesSeen[data.newX+","+data.newY]) {
+			actors[data.what].update(data.newX, data.newY);
+		}else {
+			actors[data.what].x = data.newX;
+			actors[data.what].y = data.newY;
+		};
+	}else {
+		display.draw(x, y, map[x+","+y]);
+		actors[data.what].update(data.newX, data.newY);
+	}
 });
 socket.on('playerLeft',function (data){
 	actors[data].removeMe();
